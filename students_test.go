@@ -110,11 +110,12 @@ func TestMatrix_Rows(t *testing.T) {
 }
 
 func TestMatrix_Set(t *testing.T) {
-	type fields struct {
-		rows int
-		cols int
-		data []int
+	var setMatrix Matrix = Matrix{
+		rows: testMatrix.rows,
+		cols: testMatrix.cols,
+		data: make([]int, testMatrix.rows*testMatrix.cols),
 	}
+	copy(setMatrix.data, testMatrix.data)
 	type args struct {
 		row   int
 		col   int
@@ -122,18 +123,29 @@ func TestMatrix_Set(t *testing.T) {
 	}
 	tests := []struct {
 		name   string
-		fields fields
+		matrix *Matrix
 		args   args
 		want   bool
 	}{
-		// TODO: Add test cases.
+		{
+			name:   "success",
+			matrix: &setMatrix,
+			args:   args{0, 0, 7},
+			want:   true,
+		},
+		{
+			name:   "failed",
+			matrix: &setMatrix,
+			args:   args{7, 7, 7},
+			want:   false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &Matrix{
-				rows: tt.fields.rows,
-				cols: tt.fields.cols,
-				data: tt.fields.data,
+				rows: tt.matrix.rows,
+				cols: tt.matrix.cols,
+				data: tt.matrix.data,
 			}
 			if got := m.Set(tt.args.row, tt.args.col, tt.args.value); got != tt.want {
 				t.Errorf("Set() = %v, want %v", got, tt.want)
